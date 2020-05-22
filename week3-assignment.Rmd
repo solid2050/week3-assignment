@@ -1,0 +1,63 @@
+---
+title: "Week 3 presentation"
+author: "Mohamed Hussien"
+date: "May 22, 2020"
+output:
+  slidy_presentation: default
+  beamer_presentation:
+    incremental: yes
+  ioslides_presentation:
+    incremental: yes
+    smaller: yes
+    widescreen: no
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Bitcoin price data | Bitstamp.com in USD
+
+- Data was taken from Quandl.com (https://www.quandl.com/collections/markets/bitcoin-data)
+- The data pertains to the Bitcoin prince in USD on the Bitstamp exchange.(https://www.quandl.com/collections/markets/bitcoin-data)
+- The data spans the last 14 days. 
+
+## Code {.smaller}
+
+```{r getdata, echo = TRUE, warning= FALSE, message= FALSE}
+library(RCurl)
+library(plotly)
+
+url_bitstamp <- "http://www.quandl.com/api/v1/datasets/BCHARTS/BITSTAMPUSD.csv?rows=14"
+data <- getURL(url_bitstamp, ssl.verifypeer=0L, followlocation=1L)
+csv_bitstamp <- read.csv(text=data)
+csv_bitstamp$Date <- as.Date(as.character(csv_bitstamp$Date))
+
+p <- plot_ly(csv_bitstamp, x = ~Date[1:14], y = ~Close[1:14], type = "scatter", 
+  mode = "lines", showlegend = TRUE, name = "BTC Closing Price") %>%
+     
+  add_trace(y = ~High[1:14], type="scatter", mode="lines", fill = "tonexty", 
+  fillcolor = "rgba(0,100,80,0.2)", line = list(color="transparent"), 
+  showlegend = TRUE, name="Day High") %>%
+
+  add_trace(y = ~Low[1:14], type="scatter", mode="lines", fill = "tonexty", 
+  fillcolor = "rgba(0,80,80,0.2)", line = list(color="transparent"), 
+  showlegend = TRUE, name="Day Low") %>%
+  
+  layout(xaxis = list(title="Date"), yaxis = list(title="BTC/USD"))
+
+```
+
+## Bitcoin/USD
+
+```{r showplot, warning= FALSE, message= FALSE}
+
+p
+```
+
+## Thank you! | ...and have a nice day!
+
+
+
